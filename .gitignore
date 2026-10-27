@@ -1,44 +1,56 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ---------------------------------------------------------------------------
+# Financial App monorepo — root ignore rules.
+# Per-project rules live in app/angular-web/.gitignore and
+# services/banking-api/.gitignore.
+# ---------------------------------------------------------------------------
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# Build output
+dist/
+build/
+out-tsc/
+target/
+.angular/cache/
+.vite/
+*.tsbuildinfo
 
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
-
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
+# Test + coverage output
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
 __screenshots__/
+e2e/cypress/artifacts/
+cypress/videos/
+cypress/screenshots/
 
-# System files
+# Local environment files (templates such as .env.example stay tracked)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
 .DS_Store
 Thumbs.db
+
+# Local databases / data volumes
+*.sqlite
+*.db
+.pgdata/
