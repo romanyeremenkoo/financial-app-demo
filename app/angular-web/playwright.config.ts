@@ -19,7 +19,7 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: `npx ng serve --port ${PORT}`,
+    command: 'npm run serve:e2e',
     url: BASE_URL,
     reuseExistingServer: !process.env['CI'],
     timeout: 180_000,

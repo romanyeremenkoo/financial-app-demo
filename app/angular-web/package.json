@@ -16,7 +16,7 @@
     "format": "prettier --write \"**/*.{ts,html,scss,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,html,scss,json,md}\"",
     "e2e": "npm run e2e:pw && npm run e2e:cy",
-    "e2e:pw": "start-server-and-test serve:e2e http://localhost:4280 \"playwright test\"",
+    "e2e:pw": "playwright test",
     "e2e:cy": "start-server-and-test serve:e2e http://localhost:4280 \"cypress run\"",
     "e2e:cy:open": "start-server-and-test serve:e2e http://localhost:4280 \"cypress open --e2e --browser electron\"",
     "serve:e2e": "ng serve --port 4280",
