@@ -1,0 +1,47 @@
+// Renamed from `.amount`: that class belongs to the shared Money component and
+// React applies styles globally, so the dialog heading was restyling every
+// monetary value in the application.
+.details-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fin-space-4);
+  padding-bottom: var(--fin-space-4);
+  border-bottom: 1px solid var(--fin-border);
+  font-size: var(--fin-text-2xl);
+}
+
+.details {
+  margin: 0;
+  padding: var(--fin-space-2) 0 0;
+}
+
+.details__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--fin-space-4);
+  padding: var(--fin-space-3) 0;
+  border-bottom: 1px solid var(--fin-border);
+}
+
+.details__row:last-child {
+  border-bottom: 0;
+}
+
+.details dt {
+  color: var(--fin-text-secondary);
+  font-size: var(--fin-text-sm);
+}
+
+.details dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.details__mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--fin-text-xs);
+  font-weight: 500;
+  word-break: break-all;
+}

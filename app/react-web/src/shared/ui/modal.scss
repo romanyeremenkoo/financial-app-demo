@@ -1,0 +1,111 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--fin-space-4);
+}
+
+.modal__scrim {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(16, 24, 40, 0.48);
+  cursor: default;
+  animation: modal-fade var(--fin-duration-base) var(--fin-ease);
+}
+
+.modal__surface {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(480px, 100%);
+  max-height: calc(100vh - var(--fin-space-8));
+  overflow: hidden;
+  background: var(--fin-surface);
+  border: 1px solid var(--fin-border);
+  border-radius: var(--fin-radius-xl);
+  box-shadow: var(--fin-shadow-lg);
+  animation: modal-rise var(--fin-duration-base) var(--fin-ease);
+}
+
+.modal__surface--wide {
+  width: min(560px, 100%);
+}
+
+.modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--fin-space-4);
+  padding: var(--fin-space-6) var(--fin-space-6) 0;
+}
+
+.modal__title {
+  font-size: var(--fin-text-xl);
+  font-weight: 650;
+  color: var(--fin-text);
+}
+
+.modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--fin-border);
+  border-radius: var(--fin-radius-pill);
+  background: var(--fin-surface);
+  color: var(--fin-text-secondary);
+  cursor: pointer;
+  transition: background var(--fin-duration-fast) var(--fin-ease);
+}
+
+.modal__close:hover {
+  background: var(--fin-surface-muted);
+  color: var(--fin-text);
+}
+
+.modal__body {
+  padding: var(--fin-space-3) var(--fin-space-6) 0;
+  overflow-y: auto;
+}
+
+.modal__message {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--fin-text-secondary);
+}
+
+.modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--fin-space-3);
+  padding: var(--fin-space-6);
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

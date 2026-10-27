@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Financial App">
+  <rect width="64" height="64" rx="16" fill="#315EF5" />
+  <path
+    d="M24 44V20h18v6H31v5h9.5v6H31v7z"
+    fill="#FFFFFF"
+  />
+  <circle cx="44" cy="42" r="6" fill="#18B7A0" />
+</svg>

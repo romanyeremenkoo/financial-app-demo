@@ -1,0 +1,16 @@
+.skip-link {
+  position: absolute;
+  left: var(--fin-space-4);
+  top: -56px;
+  z-index: 100;
+  padding: var(--fin-space-3) var(--fin-space-5);
+  border-radius: var(--fin-radius-pill);
+  background: var(--fin-navy);
+  color: var(--fin-text-inverse);
+  font-weight: 600;
+  transition: top var(--fin-duration-base) var(--fin-ease);
+}
+
+.skip-link:focus {
+  top: var(--fin-space-4);
+}

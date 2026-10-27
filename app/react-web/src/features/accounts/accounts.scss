@@ -1,0 +1,37 @@
+@use '../../styles/tokens' as *;
+@use '../../styles/mixins' as *;
+
+.section + .section {
+  margin-top: var(--fin-space-10);
+}
+
+.section__title {
+  @include section-title;
+  margin-bottom: var(--fin-space-2);
+}
+
+.section__note {
+  margin: 0 0 var(--fin-space-4);
+  color: var(--fin-text-secondary);
+  font-size: var(--fin-text-sm);
+}
+
+.grid {
+  display: grid;
+  gap: var(--fin-space-4);
+}
+
+@include from('md') {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .grid--cards {
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  }
+}
+
+.accounts .skeleton-card {
+  padding: var(--fin-space-5);
+  @include surface-card;
+}
