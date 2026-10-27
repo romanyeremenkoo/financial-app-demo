@@ -9,6 +9,7 @@
     "start": "vite",
     "dev": "vite",
     "build": "tsc -b --noEmit && vite build",
+    "postbuild": "node tools/strip-cf-asset-config.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
