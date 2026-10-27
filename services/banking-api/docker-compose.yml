@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: financial-app-postgres
+    environment:
+      POSTGRES_DB: financial_app
+      POSTGRES_USER: financial_app
+      # Dev default; override with POSTGRES_PASSWORD in your .env file.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-financial_app}
+    ports:
+      - "5432:5432"
+    volumes:
+      - banking_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U financial_app -d financial_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  banking_pgdata:
+    name: banking_pgdata

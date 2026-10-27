@@ -1,0 +1,28 @@
+package com.financialapp.banking.domain;
+
+/**
+ * Stable, machine-readable error identifiers. These values are part of the API
+ * contract and must never change.
+ */
+public enum ErrorCode {
+    VALIDATION_FAILED,
+    ACCOUNT_NOT_FOUND,
+    CARD_NOT_FOUND,
+    TRANSACTION_NOT_FOUND,
+    TRANSFER_NOT_FOUND,
+    IDEMPOTENCY_KEY_REQUIRED,
+    IDEMPOTENCY_KEY_REUSED,
+    SOURCE_REQUIRED,
+    DESTINATION_REQUIRED,
+    SAME_ACCOUNT,
+    SOURCE_NOT_FOUND,
+    DESTINATION_NOT_FOUND,
+    SOURCE_INELIGIBLE,
+    DESTINATION_INELIGIBLE,
+    AMOUNT_REQUIRED,
+    AMOUNT_NOT_POSITIVE,
+    AMOUNT_PRECISION,
+    CURRENCY_MISMATCH,
+    INSUFFICIENT_FUNDS,
+    INTERNAL_ERROR
+}
