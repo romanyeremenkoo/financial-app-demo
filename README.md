@@ -51,11 +51,11 @@ no backend, no database and no API key.
 
 | Frontend | Demo | Source |
 |---|---|---|
-| Angular 22 | _TODO — add deployed URL_ | [`app/angular-web/`](app/angular-web) |
-| React 19 | _TODO — add deployed URL_ | [`app/react-web/`](app/react-web) |
+| Angular 22 | **[financial-app-demo.roman-yeremenko-o.workers.dev](https://financial-app-demo.roman-yeremenko-o.workers.dev/)** | [`app/angular-web/`](app/angular-web) |
+| React 19 | **[financial-app-demo-react.roman-yeremenko-o.workers.dev](https://financial-app-demo-react.roman-yeremenko-o.workers.dev/)** | [`app/react-web/`](app/react-web) |
 
-> The URLs are intentionally left as placeholders. Fill them in after the first deployment rather
-> than committing a link that does not resolve. [How to deploy](#deployment).
+> Both demos run on Cloudflare Workers static assets and redeploy automatically from `main`.
+> [How to deploy](#deployment).
 
 ---
 
@@ -293,8 +293,7 @@ Install browsers once per frontend with `npm run e2e:install`.
 `lint:styles` is React-specific: React has no style encapsulation, so a class name declared in two
 feature stylesheets silently overrides across the whole app depending on bundle order.
 `app/react-web/tools/class-collisions.mjs` fails if any class is declared in more than one SCSS
-file. The repository also contains `tools/axe-audit.mjs` (accessibility) and `tools/capture-media.mjs`
-(screenshots plus a horizontal-overflow assertion from 320 px to 1920 px).
+file.
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs all three projects in parallel on every
 push and pull request.
@@ -303,19 +302,25 @@ push and pull request.
 
 ## Deployment
 
-Both frontends are static bundles, so any free static host works — Netlify, Cloudflare Pages, GitHub
-Pages, Vercel. Demo mode is the default production configuration, so no environment variables are
-required.
+Both frontends are static bundles, so any static host works. They are deployed to **Cloudflare
+Workers** static assets, one Worker per frontend, redeploying automatically on every push to `main`.
+Demo mode is the default production configuration, so no environment variables are required.
 
 | | Angular | React |
 |---|---|---|
+| Live demo | [financial-app-demo](https://financial-app-demo.roman-yeremenko-o.workers.dev/) | [financial-app-demo-react](https://financial-app-demo-react.roman-yeremenko-o.workers.dev/) |
 | Base directory | `app/angular-web` | `app/react-web` |
 | Build command | `npm ci && npm run build` | `npm ci && npm run build` |
 | Publish directory | `dist/pet-project-angular/browser` | `dist` |
+| Worker config | [`app/angular-web/wrangler.jsonc`](app/angular-web/wrangler.jsonc) | [`app/react-web/wrangler.jsonc`](app/react-web/wrangler.jsonc) |
 
-Both projects ship a `public/_redirects` file containing `/* /index.html 200`, which gives the SPA
-router a history fallback on Netlify and Cloudflare Pages. On other hosts, configure the equivalent
-rewrite.
+The SPA history fallback comes from `not_found_handling: "single-page-application"` in each
+`wrangler.jsonc`. Neither project ships a `_redirects` file: on Workers static assets a
+Pages-style `/* /index.html 200` rule collides with the built-in HTML handling and the deploy is
+rejected with `Invalid _redirects configuration: Infinite loop detected in this rule`. A `postbuild`
+hook (`tools/strip-cf-asset-config.mjs`) deletes `_redirects` and `_headers` from the build output
+so a stale build directory cannot reintroduce one. On hosts other than Workers — Netlify, Vercel,
+Nginx — configure the equivalent rewrite to `index.html` instead.
 
 The backend is a local development and portfolio component. It runs on any machine with a JDK and is
 not required for the deployed demos; no paid infrastructure is needed anywhere in this project.

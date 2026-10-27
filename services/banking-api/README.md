@@ -12,6 +12,11 @@ exactly — accounts, cards, transactions and money transfers for the fictional
 - **Docs:** springdoc-openapi (Swagger UI)
 - **Base path:** every endpoint is served under **`/api`** (`server.servlet.context-path=/api`)
 
+> This service is a local development component and is **not** part of the deployed demos: both
+> frontends default to demo mode and need no backend. The live builds are
+> [Angular](https://financial-app-demo.roman-yeremenko-o.workers.dev/) and
+> [React](https://financial-app-demo-react.roman-yeremenko-o.workers.dev/).
+
 ---
 
 ## Table of contents

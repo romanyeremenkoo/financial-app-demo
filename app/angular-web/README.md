@@ -17,6 +17,10 @@ account, card and transaction is fictional. It runs **standalone in demo mode** 
 all, and can also connect to the shared [Spring Boot API](../../services/banking-api) in API mode —
 see [operating modes](../../README.md#operating-modes).
 
+**[▶ Live demo](https://financial-app-demo.roman-yeremenko-o.workers.dev/)** — the React build of
+the same product is at
+**[financial-app-demo-react](https://financial-app-demo-react.roman-yeremenko-o.workers.dev/)**.
+
 <img src="docs/media/dashboard.png" alt="Dashboard of the Financial App showing total balance, monthly income and spending, account cards and recent transactions" width="900" />
 
 </div>
@@ -391,15 +395,26 @@ Layouts are fluid from 320 px to 1920 px with a drawer navigation on small scree
 
 ## Deployment
 
+Deployed to **Cloudflare Workers** static assets at
+**<https://financial-app-demo.roman-yeremenko-o.workers.dev/>**, redeploying automatically on every
+push to `main`.
+
 The app is a static bundle with hash-free routing, so any static host works:
 
 ```bash
 npm run build          # outputs dist/pet-project-angular/browser
 ```
 
-Serve that folder with a **SPA fallback** that rewrites unknown paths to `index.html` — Netlify
-`/* /index.html 200`, Vercel rewrites, or Nginx `try_files $uri /index.html`. For a quick local
-check: `npx serve -s dist/pet-project-angular/browser`.
+Serve that folder with a **SPA fallback** that rewrites unknown paths to `index.html`. On Workers
+that is `not_found_handling: "single-page-application"` in [`wrangler.jsonc`](wrangler.jsonc);
+elsewhere use Netlify `/* /index.html 200`, Vercel rewrites, or Nginx `try_files $uri /index.html`.
+For a quick local check: `npx serve -s dist/pet-project-angular/browser`.
+
+> Do not add a `_redirects` file here. On Workers static assets a `/* /index.html 200` rule collides
+> with the built-in HTML handling, and the deploy is rejected with an
+> `Invalid _redirects configuration` error about an infinite redirect loop. The `postbuild` hook
+> ([`tools/strip-cf-asset-config.mjs`](tools/strip-cf-asset-config.mjs)) strips `_redirects` and
+> `_headers` from the build output for that reason.
 
 ## Licence
 

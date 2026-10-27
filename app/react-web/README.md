@@ -8,6 +8,10 @@ the same business rules and the same EN/UA copy.
 See the [root README](../../README.md) for the product overview, screenshots and deployment, and
 [docs/architecture.md](../../docs/architecture.md) for the full design.
 
+**[▶ Live demo](https://financial-app-demo-react.roman-yeremenko-o.workers.dev/)** — the Angular
+build of the same product is at
+**[financial-app-demo](https://financial-app-demo.roman-yeremenko-o.workers.dev/)**.
+
 ## Stack
 
 React 19 · TypeScript (strict) · Vite · React Router 8 · React Hook Form + Zod · ECharts ·
@@ -58,10 +62,6 @@ exactly how an unrelated dialog's `.amount` rule once resized every monetary val
 `tools/class-collisions.mjs` scans every SCSS file and fails if a class is declared more than once,
 so that class of bug cannot come back.
 
-`tools/axe-audit.mjs` and `tools/capture-media.mjs` cover accessibility auditing and screenshot
-capture with a horizontal-overflow assertion from 320 px to 1920 px. Both expect a dev server to be
-running.
-
 ## Layout
 
 ```text
@@ -78,3 +78,17 @@ src/
 
 Dependencies flow one way: `features → application → domain`. Feature components never issue HTTP
 requests and never branch on the operating mode.
+
+## Deployment
+
+Deployed to **Cloudflare Workers** static assets at
+**<https://financial-app-demo-react.roman-yeremenko-o.workers.dev/>**, redeploying automatically on
+every push to `main`. `npm run build` emits `dist/`, and the SPA history fallback comes from
+`not_found_handling: "single-page-application"` in [`wrangler.jsonc`](wrangler.jsonc).
+
+> Do not add a `_redirects` file here. On Workers static assets a `/* /index.html 200` rule collides
+> with the built-in HTML handling, and the deploy is rejected with an
+> `Invalid _redirects configuration` error about an infinite redirect loop. The `postbuild` hook
+> ([`tools/strip-cf-asset-config.mjs`](tools/strip-cf-asset-config.mjs)) strips `_redirects` and
+> `_headers` from the build output for that reason. On hosts other than Workers, configure the
+> equivalent rewrite to `index.html`.
