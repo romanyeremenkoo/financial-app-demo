@@ -1,0 +1,17 @@
+# Normalise line endings in the repository to LF.
+#
+# Prettier runs with its default `endOfLine: lf` in both frontends, so a
+# checkout that converted files to CRLF would fail `format:check` on Windows
+# while passing on the Linux CI runners.
+* text=auto eol=lf
+
+# Binary assets must never be converted.
+*.png binary
+*.gif binary
+*.jpg binary
+*.ico binary
+*.jar binary
+
+# Keep the Maven wrapper runnable on both platforms.
+mvnw text eol=lf
+mvnw.cmd text eol=crlf
