@@ -1,0 +1,52 @@
+<article class="tile" data-qa="card-tile" [attr.data-card-id]="card().id">
+  <div class="plastic" [class.plastic--frozen]="isFrozen()">
+    <div class="plastic__top">
+      <span class="plastic__label">{{ card().label }}</span>
+      <span class="plastic__network">{{ networkLabel() }}</span>
+    </div>
+
+    <p class="plastic__number">{{ card().maskedNumber }}</p>
+
+    <div class="plastic__bottom">
+      <div>
+        <span class="plastic__caption">{{ 'card.holder' | translate }}</span>
+        <span class="plastic__value">{{ card().holderName }}</span>
+      </div>
+      <div>
+        <span class="plastic__caption">{{ 'card.expires' | translate }}</span>
+        <span class="plastic__value">{{ card().expiry }}</span>
+      </div>
+    </div>
+
+    @if (isFrozen()) {
+      <span class="plastic__frozen-badge" data-qa="card-frozen-badge">
+        <fin-icon name="freeze" [size]="16" />
+        {{ 'card.frozen' | translate }}
+      </span>
+    }
+  </div>
+
+  <div class="tile__meta">
+    <div>
+      <p class="tile__account">{{ accountName() }}</p>
+      <fin-status-chip
+        data-qa="card-status"
+        [label]="statusKey() | translate"
+        [tone]="statusTone()"
+      />
+    </div>
+
+    <button
+      type="button"
+      class="fin-button"
+      [class.fin-button--secondary]="!isFrozen()"
+      [class.fin-button--primary]="isFrozen()"
+      [disabled]="busy()"
+      data-qa="card-toggle"
+      (click)="requestToggle()"
+    >
+      <fin-icon [name]="isFrozen() ? 'unfreeze' : 'freeze'" [size]="17" />
+      {{ actionKey() | translate }}
+    </button>
+  </div>
+</article>

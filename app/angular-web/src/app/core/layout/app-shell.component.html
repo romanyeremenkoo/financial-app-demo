@@ -1,0 +1,149 @@
+<div class="shell" [class.shell--nav-open]="mobileNavOpen()">
+  <aside class="sidebar" id="primary-navigation">
+    <div class="sidebar__brand">
+      <span class="brand-mark" aria-hidden="true">{{ 'app.mark' | translate }}</span>
+      <span class="brand-name">{{ 'app.name' | translate }}</span>
+    </div>
+
+    <nav class="sidebar__nav" data-qa="primary-nav" [attr.aria-label]="'nav.primary' | translate">
+      <ul class="nav-list">
+        @for (item of navItems; track item.id) {
+          <li>
+            <a
+              class="nav-link"
+              [attr.data-qa]="`nav-link-${item.id}`"
+              [routerLink]="item.path"
+              routerLinkActive="nav-link--active"
+              [routerLinkActiveOptions]="{ exact: false }"
+              (click)="closeMobileNav()"
+            >
+              <fin-icon [name]="item.icon" [size]="19" />
+              <span>{{ `nav.${item.id}` | translate }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="sidebar__footer">
+      <div class="balance-card">
+        <p class="balance-card__label">{{ 'shell.totalBalance' | translate }}</p>
+        @if (store.isLoading()) {
+          <fin-skeleton width="120px" height="26px" />
+        } @else {
+          <fin-money
+            class="balance-card__value"
+            [value]="store.totalBalance()"
+            [hidden]="store.balancesHidden()"
+          />
+        }
+        <button
+          type="button"
+          class="balance-card__toggle"
+          data-qa="balance-toggle"
+          (click)="toggleBalances()"
+        >
+          <fin-icon [name]="store.balancesHidden() ? 'eye' : 'eye-off'" [size]="15" />
+          {{ balanceToggleKey() | translate }}
+        </button>
+      </div>
+
+      @if (store.supportsReset()) {
+        <button type="button" class="exit-button" data-qa="reset-demo" (click)="confirmReset()">
+          <fin-icon name="refresh" [size]="18" />
+          {{ 'shell.resetDemo' | translate }}
+        </button>
+      }
+
+      @if (store.mode() === 'api') {
+        <p class="api-mode" data-qa="api-mode">{{ 'shell.apiMode' | translate }}</p>
+      }
+
+      <button type="button" class="exit-button" data-qa="exit-demo" (click)="exitDemo()">
+        <fin-icon name="logout" [size]="18" />
+        {{ 'shell.exitDemo' | translate }}
+      </button>
+    </div>
+  </aside>
+
+  @if (mobileNavOpen()) {
+    <button
+      type="button"
+      class="scrim"
+      data-qa="nav-scrim"
+      [attr.aria-label]="'nav.close' | translate"
+      (click)="closeMobileNav()"
+    ></button>
+  }
+
+  <div class="main-column">
+    <header class="topbar">
+      <button
+        type="button"
+        class="icon-button topbar__menu"
+        data-qa="nav-toggle"
+        [attr.aria-expanded]="mobileNavOpen()"
+        aria-controls="primary-navigation"
+        [attr.aria-label]="'nav.toggle' | translate"
+        (click)="toggleMobileNav()"
+      >
+        <fin-icon [name]="mobileNavOpen() ? 'close' : 'menu'" [size]="20" />
+      </button>
+
+      <div class="topbar__greeting">
+        <p class="topbar__eyebrow">{{ 'shell.signedInAs' | translate }}</p>
+        <p class="topbar__name">{{ store.holderName }}</p>
+      </div>
+
+      <div class="topbar__actions">
+        <fin-language-switcher />
+
+        <button
+          type="button"
+          class="icon-button"
+          data-qa="balance-toggle"
+          [attr.aria-pressed]="store.balancesHidden()"
+          (click)="toggleBalances()"
+        >
+          <fin-icon [name]="store.balancesHidden() ? 'eye' : 'eye-off'" [size]="19" />
+          <span class="fin-visually-hidden">{{ balanceToggleKey() | translate }}</span>
+        </button>
+        <a
+          class="fin-button fin-button--primary topbar__cta"
+          data-qa="new-transfer"
+          routerLink="/transfers"
+        >
+          <fin-icon name="transfer" [size]="18" />
+          {{ 'shell.newTransfer' | translate }}
+        </a>
+        <span class="avatar" aria-hidden="true">{{ initials() }}</span>
+      </div>
+    </header>
+
+    <main id="main-content" class="content" tabindex="-1">
+      @if (store.status() === 'error') {
+        <div class="load-error" role="alert" data-qa="load-error">
+          <fin-icon name="alert" [size]="22" />
+          <div>
+            <h2 class="load-error__title">
+              {{ store.error()?.titleKey ?? 'shell.loadErrorTitle' | translate }}
+            </h2>
+            <p class="load-error__text">{{ store.error()?.messageKey ?? '' | translate }}</p>
+          </div>
+          <button
+            type="button"
+            class="fin-button fin-button--secondary"
+            data-qa="load-retry"
+            (click)="retryLoad()"
+          >
+            {{ 'shell.tryAgain' | translate }}
+          </button>
+        </div>
+      } @else {
+        <router-outlet />
+      }
+    </main>
+
+    <footer class="disclaimer">{{ 'app.disclaimer' | translate }}</footer>
+  </div>
+</div>

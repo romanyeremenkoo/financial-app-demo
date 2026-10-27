@@ -1,0 +1,127 @@
+<fin-page-header
+  [title]="'transactions.title' | translate"
+  [subtitle]="'transactions.subtitle' | translate"
+>
+  @if (hasFilters()) {
+    <button
+      type="button"
+      class="fin-button fin-button--secondary"
+      data-qa="clear-filters"
+      (click)="clearFilters()"
+    >
+      <fin-icon name="close" [size]="16" />
+      {{ 'transactions.clearFilters' | translate }}
+      @if (activeCount() > 0) {
+        <span class="count">{{ activeCount() }}</span>
+      }
+    </button>
+  }
+</fin-page-header>
+
+<form class="filters" [formGroup]="form" (ngSubmit)="$event.preventDefault()">
+  <div class="filters__search fin-field">
+    <label class="fin-label" for="transaction-search">{{
+      'transactions.search' | translate
+    }}</label>
+    <div class="search-input">
+      <span class="search-input__icon" aria-hidden="true">
+        <fin-icon name="search" [size]="18" />
+      </span>
+      <input
+        id="transaction-search"
+        class="fin-input search-input__control"
+        type="search"
+        formControlName="search"
+        data-qa="search-input"
+        [attr.placeholder]="'transactions.searchPlaceholder' | translate"
+        autocomplete="off"
+      />
+    </div>
+  </div>
+
+  <div class="fin-field">
+    <fin-select
+      controlId="filter-account"
+      formControlName="accountId"
+      qa="account-filter"
+      [label]="'transactions.account' | translate"
+      [options]="accountOptions()"
+    />
+  </div>
+
+  <div class="fin-field">
+    <fin-select
+      controlId="filter-category"
+      formControlName="category"
+      qa="category-filter"
+      [label]="'transactions.category' | translate"
+      [options]="categoryOptions()"
+    />
+  </div>
+
+  <div class="fin-field">
+    <fin-select
+      controlId="filter-direction"
+      formControlName="direction"
+      qa="direction-filter"
+      [label]="'transactions.direction' | translate"
+      [options]="directionOptions()"
+    />
+  </div>
+
+  <div class="fin-field">
+    <fin-select
+      controlId="filter-sort"
+      formControlName="sort"
+      qa="sort-filter"
+      [label]="'transactions.sortBy' | translate"
+      [options]="sortSelectOptions()"
+    />
+  </div>
+</form>
+
+<section class="results" [attr.aria-label]="'transactions.results' | translate">
+  @if (store.isLoading()) {
+    <div class="results__skeleton">
+      @for (row of skeletonRows; track row) {
+        <fin-skeleton height="56px" />
+      }
+    </div>
+  } @else if (results().length === 0) {
+    <fin-empty-state
+      icon="search"
+      [title]="'transactions.emptyTitle' | translate"
+      [message]="'transactions.emptyMessage' | translate"
+      data-qa="transactions-empty"
+    >
+      <button type="button" class="fin-button fin-button--primary" (click)="clearFilters()">
+        {{ 'transactions.clearAllFilters' | translate }}
+      </button>
+    </fin-empty-state>
+  } @else {
+    <p class="results__count" aria-live="polite" data-qa="result-count">
+      {{
+        (results().length === 1 ? 'transactions.countOne' : 'transactions.count')
+          | translate: { count: results().length }
+      }}
+    </p>
+
+    @for (group of groups(); track group.label) {
+      <section class="group">
+        <h2 class="group__title">{{ group.label }}</h2>
+        <ul class="group__list">
+          @for (transaction of group.transactions; track transaction.id) {
+            <li>
+              <fin-transaction-row
+                [transaction]="transaction"
+                [accountName]="accountName(transaction)"
+                [hideAmount]="store.balancesHidden()"
+                (selected)="openDetails($event)"
+              />
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+</section>

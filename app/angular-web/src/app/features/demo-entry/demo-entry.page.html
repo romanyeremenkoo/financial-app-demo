@@ -1,0 +1,60 @@
+<main class="entry" id="main-content" tabindex="-1">
+  <section class="entry__panel">
+    <div class="entry__top">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">{{ 'app.mark' | translate }}</span>
+        <span class="brand__name">{{ 'app.name' | translate }}</span>
+      </div>
+      <fin-language-switcher />
+    </div>
+
+    <h1 class="entry__title">{{ 'demoEntry.title' | translate }}</h1>
+    <p class="entry__lead">{{ 'demoEntry.lead' | translate }}</p>
+
+    <ul class="entry__list">
+      @for (highlightKey of highlightKeys; track highlightKey) {
+        <li class="entry__item">
+          <span class="entry__check" aria-hidden="true"><fin-icon name="check" [size]="14" /></span>
+          {{ highlightKey | translate }}
+        </li>
+      }
+    </ul>
+
+    <button
+      type="button"
+      class="fin-button fin-button--primary entry__cta"
+      data-qa="enter-demo"
+      (click)="enterDemo()"
+    >
+      {{ 'demoEntry.cta' | translate }}
+      <fin-icon name="arrow-right" [size]="18" />
+    </button>
+
+    <p class="entry__note">{{ 'demoEntry.note' | translate }}</p>
+  </section>
+
+  <aside class="entry__preview" aria-hidden="true">
+    <div class="preview-card">
+      <p class="preview-card__label">{{ 'demoEntry.previewBalance' | translate }}</p>
+      <p class="preview-card__value">€ • • • •</p>
+      <div class="preview-card__row">
+        <span>{{ 'demoEntry.previewCurrent' | translate }}</span>
+        <span class="preview-card__bar preview-card__bar--current"></span>
+      </div>
+      <div class="preview-card__row">
+        <span>{{ 'demoEntry.previewSavings' | translate }}</span>
+        <span class="preview-card__bar preview-card__bar--savings"></span>
+      </div>
+      <div class="preview-card__row">
+        <span>{{ 'demoEntry.previewJoint' | translate }}</span>
+        <span class="preview-card__bar preview-card__bar--joint"></span>
+      </div>
+    </div>
+    <div class="preview-chip preview-chip--one">
+      {{ 'demoEntry.previewChipTransfers' | translate }}
+    </div>
+    <div class="preview-chip preview-chip--two">
+      {{ 'demoEntry.previewChipAnalytics' | translate }}
+    </div>
+  </aside>
+</main>

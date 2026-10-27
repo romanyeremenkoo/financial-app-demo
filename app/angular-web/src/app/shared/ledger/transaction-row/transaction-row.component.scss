@@ -1,0 +1,88 @@
+:host {
+  display: block;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--fin-space-3);
+  width: 100%;
+  padding: var(--fin-space-3);
+  border: 0;
+  border-radius: var(--fin-radius-md);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--fin-duration-fast) var(--fin-ease);
+}
+
+@media (min-width: 768px) {
+  .row {
+    grid-template-columns: 40px minmax(0, 1fr) auto auto;
+  }
+}
+
+.row:hover {
+  background: var(--fin-surface-muted);
+}
+
+.row__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--fin-radius-md);
+  background: color-mix(in srgb, var(--accent) 12%, white);
+  // Darkened towards the navy so every category accent clears AA against its
+  // own 12% tint; the raw accent is only ~3:1 for the lighter categories.
+  color: color-mix(in srgb, var(--accent) 48%, var(--fin-navy));
+  font-size: var(--fin-text-sm);
+  font-weight: 700;
+}
+
+.row__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.row__counterparty {
+  font-weight: 600;
+  color: var(--fin-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__meta {
+  font-size: var(--fin-text-sm);
+  color: var(--fin-text-secondary);
+}
+
+.row__dot {
+  margin: 0 4px;
+}
+
+.row__status {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .row__status {
+    display: block;
+  }
+}
+
+.row__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.row__date {
+  font-size: var(--fin-text-sm);
+  color: var(--fin-text-secondary);
+}

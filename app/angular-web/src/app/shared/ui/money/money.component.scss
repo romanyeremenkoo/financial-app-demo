@@ -1,0 +1,19 @@
+:host {
+  display: inline-block;
+}
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.amount--positive {
+  color: var(--fin-success);
+}
+
+.amount--negative {
+  color: var(--fin-text);
+}

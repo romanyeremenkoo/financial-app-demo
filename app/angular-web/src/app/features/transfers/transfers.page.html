@@ -1,0 +1,272 @@
+<fin-page-header
+  [title]="'transfers.title' | translate"
+  [subtitle]="'transfers.subtitle' | translate"
+/>
+
+<ol class="steps" [attr.aria-label]="'transfers.progress' | translate">
+  <li
+    class="steps__item"
+    [class.steps__item--active]="step() === 'form'"
+    [attr.aria-current]="step() === 'form' ? 'step' : null"
+  >
+    <span class="steps__index">1</span> {{ 'transfers.stepDetails' | translate }}
+  </li>
+  <li
+    class="steps__item"
+    [class.steps__item--active]="step() === 'review'"
+    [attr.aria-current]="step() === 'review' ? 'step' : null"
+  >
+    <span class="steps__index">2</span> {{ 'transfers.stepReview' | translate }}
+  </li>
+  <li
+    class="steps__item"
+    [class.steps__item--active]="step() === 'receipt'"
+    [attr.aria-current]="step() === 'receipt' ? 'step' : null"
+  >
+    <span class="steps__index">3</span> {{ 'transfers.stepReceipt' | translate }}
+  </li>
+</ol>
+
+@if (store.isLoading()) {
+  <div class="panel"><fin-skeleton height="320px" /></div>
+} @else {
+  @switch (step()) {
+    @case ('form') {
+      <form class="panel" [formGroup]="form" (ngSubmit)="goToReview()" novalidate>
+        @if (submitError(); as error) {
+          <p class="alert" role="alert" data-qa="transfer-error">
+            <fin-icon name="alert" [size]="18" />
+            {{ error | translate }}
+          </p>
+        }
+
+        <div class="fin-field">
+          <fin-select
+            controlId="transfer-source"
+            formControlName="sourceAccountId"
+            qa="source-account"
+            [label]="'transfers.fromAccount' | translate"
+            [placeholder]="'transfers.selectAccount' | translate"
+            [options]="sourceOptions()"
+            [invalid]="fieldErrorKey('source') !== null"
+            [describedBy]="fieldErrorKey('source') ? 'source-error' : 'source-hint'"
+          />
+          @if (sourceAccount(); as source) {
+            <p id="source-hint" class="fin-hint">
+              {{ 'transfers.availableHint' | translate }}
+              <fin-money
+                [value]="{ amountMinor: source.availableMinor, currency: source.currency }"
+              />
+            </p>
+          } @else {
+            <p id="source-hint" class="fin-hint">{{ 'transfers.sourceHint' | translate }}</p>
+          }
+          @if (fieldErrorKey('source'); as error) {
+            <p id="source-error" class="fin-error-text" role="alert" data-qa="error-source">
+              <fin-icon name="alert" [size]="15" />
+              {{ error | translate }}
+            </p>
+          }
+        </div>
+
+        <div class="fin-field">
+          <fin-select
+            controlId="transfer-destination"
+            formControlName="destinationAccountId"
+            qa="destination-account"
+            [label]="'transfers.toAccount' | translate"
+            [placeholder]="'transfers.selectAccount' | translate"
+            [options]="destinationSelectOptions()"
+            [invalid]="fieldErrorKey('destination') !== null"
+            [describedBy]="fieldErrorKey('destination') ? 'destination-error' : undefined"
+          />
+          @if (fieldErrorKey('destination'); as error) {
+            <p
+              id="destination-error"
+              class="fin-error-text"
+              role="alert"
+              data-qa="error-destination"
+            >
+              <fin-icon name="alert" [size]="15" />
+              {{ error | translate }}
+            </p>
+          }
+        </div>
+
+        <div class="fin-field">
+          <label class="fin-label" for="transfer-amount">
+            {{ 'transfers.amount' | translate: { currency: store.currency } }}
+          </label>
+          <input
+            id="transfer-amount"
+            class="fin-input amount-input"
+            type="text"
+            inputmode="decimal"
+            formControlName="amount"
+            data-qa="transfer-amount"
+            [attr.placeholder]="'transfers.amountPlaceholder' | translate"
+            autocomplete="off"
+            [class.is-invalid]="fieldErrorKey('amount') !== null"
+            [attr.aria-describedby]="fieldErrorKey('amount') ? 'amount-error' : 'amount-hint'"
+          />
+          <p id="amount-hint" class="fin-hint">{{ 'transfers.amountHint' | translate }}</p>
+          @if (fieldErrorKey('amount'); as error) {
+            <p id="amount-error" class="fin-error-text" role="alert" data-qa="error-amount">
+              <fin-icon name="alert" [size]="15" />
+              {{ error | translate }}
+            </p>
+          }
+        </div>
+
+        <div class="fin-field">
+          <label class="fin-label" for="transfer-reference">{{
+            'transfers.reference' | translate
+          }}</label>
+          <input
+            id="transfer-reference"
+            class="fin-input"
+            type="text"
+            formControlName="reference"
+            data-qa="transfer-reference"
+            [attr.placeholder]="'transfers.referencePlaceholder' | translate"
+            [attr.maxlength]="referenceMaxLength"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="panel__actions">
+          <button
+            type="submit"
+            class="fin-button fin-button--primary"
+            data-qa="continue-to-review"
+            [disabled]="!canReview()"
+          >
+            {{ 'transfers.continueToReview' | translate }}
+            <fin-icon name="arrow-right" [size]="18" />
+          </button>
+        </div>
+      </form>
+    }
+
+    @case ('review') {
+      <section class="panel" aria-labelledby="review-heading">
+        <h2 id="review-heading" class="panel__title" data-qa="review-heading">
+          {{ 'transfers.reviewTitle' | translate }}
+        </h2>
+        <p class="panel__lead">{{ 'transfers.reviewLead' | translate }}</p>
+
+        <div class="review-amount">
+          <fin-money [value]="amountPreview()" />
+        </div>
+
+        <dl class="summary">
+          <div class="summary__row">
+            <dt>{{ 'transfers.from' | translate }}</dt>
+            <dd>
+              {{ sourceAccount()?.name }}<span>{{ sourceAccount()?.maskedIban }}</span>
+            </dd>
+          </div>
+          <div class="summary__row">
+            <dt>{{ 'transfers.to' | translate }}</dt>
+            <dd>
+              {{ destinationAccount()?.name }}<span>{{ destinationAccount()?.maskedIban }}</span>
+            </dd>
+          </div>
+          @if (draft().reference; as reference) {
+            <div class="summary__row">
+              <dt>{{ 'transfers.referenceLabel' | translate }}</dt>
+              <dd>{{ reference }}</dd>
+            </div>
+          }
+          <div class="summary__row">
+            <dt>{{ 'transfers.remainingAvailable' | translate }}</dt>
+            <dd><fin-money [value]="remainingAfterTransfer()" /></dd>
+          </div>
+        </dl>
+
+        <div class="panel__actions">
+          <button
+            type="button"
+            class="fin-button fin-button--secondary"
+            [disabled]="transfers.isSubmitting()"
+            (click)="backToForm()"
+          >
+            {{ 'transfers.back' | translate }}
+          </button>
+          <button
+            type="button"
+            class="fin-button fin-button--primary"
+            data-qa="confirm-transfer"
+            [disabled]="transfers.isSubmitting()"
+            (click)="confirmTransfer()"
+          >
+            @if (transfers.isSubmitting()) {
+              <fin-icon name="clock" [size]="18" />
+              {{ 'transfers.processing' | translate }}
+            } @else {
+              <fin-icon name="check" [size]="18" />
+              {{ 'transfers.confirm' | translate }}
+            }
+          </button>
+        </div>
+      </section>
+    }
+
+    @case ('receipt') {
+      @if (receipt(); as transfer) {
+        <section class="panel receipt" aria-labelledby="receipt-heading" data-qa="transfer-receipt">
+          <span class="receipt__badge" aria-hidden="true"
+            ><fin-icon name="check" [size]="26"
+          /></span>
+          <h2 id="receipt-heading" class="panel__title">
+            {{ 'transfers.receiptTitle' | translate }}
+          </h2>
+          <p class="panel__lead">
+            <fin-money
+              [value]="{ amountMinor: transfer.amountMinor, currency: transfer.currency }"
+            />
+            {{ 'transfers.receiptLead' | translate }}
+          </p>
+
+          <dl class="summary">
+            <div class="summary__row">
+              <dt>{{ 'transfers.from' | translate }}</dt>
+              <dd>{{ store.accountById(transfer.sourceAccountId)?.name }}</dd>
+            </div>
+            <div class="summary__row">
+              <dt>{{ 'transfers.to' | translate }}</dt>
+              <dd>{{ store.accountById(transfer.destinationAccountId)?.name }}</dd>
+            </div>
+            @if (transfer.reference; as reference) {
+              <div class="summary__row">
+                <dt>{{ 'transfers.referenceLabel' | translate }}</dt>
+                <dd>{{ reference }}</dd>
+              </div>
+            }
+            <div class="summary__row">
+              <dt>{{ 'transfers.completed' | translate }}</dt>
+              <dd>{{ receiptDate() }}</dd>
+            </div>
+            <div class="summary__row">
+              <dt>{{ 'transfers.transferId' | translate }}</dt>
+              <dd class="summary__mono">{{ transfer.id }}</dd>
+            </div>
+          </dl>
+
+          <div class="panel__actions">
+            <a
+              class="fin-button fin-button--secondary"
+              data-qa="receipt-view-transactions"
+              routerLink="/transactions"
+            >
+              {{ 'transfers.viewTransactions' | translate }}
+            </a>
+            <button type="button" class="fin-button fin-button--primary" (click)="startAnother()">
+              {{ 'transfers.makeAnother' | translate }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+  }
+}

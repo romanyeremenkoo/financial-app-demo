@@ -1,0 +1,98 @@
+@use '../../../../styles/mixins' as *;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--fin-space-5);
+  @include surface-card;
+  transition:
+    box-shadow var(--fin-duration-base) var(--fin-ease),
+    border-color var(--fin-duration-base) var(--fin-ease);
+}
+
+.card:hover {
+  border-color: var(--fin-border-strong);
+  box-shadow: var(--fin-shadow-sm);
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--fin-space-3);
+}
+
+.card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--fin-radius-sm);
+  background: var(--fin-primary-soft);
+  color: var(--fin-primary);
+}
+
+.card__identity {
+  min-width: 0;
+}
+
+.card__name {
+  margin: 0;
+  font-size: var(--fin-text-base);
+  font-weight: 650;
+}
+
+.card__type {
+  margin: 2px 0 0;
+  font-size: var(--fin-text-sm);
+  color: var(--fin-text-secondary);
+}
+
+.card__iban {
+  margin: var(--fin-space-4) 0 0;
+  @include tabular-numerals;
+  font-size: var(--fin-text-sm);
+  letter-spacing: 0.04em;
+  color: var(--fin-text-secondary);
+}
+
+.card__balances {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fin-space-6);
+  margin-top: var(--fin-space-4);
+}
+
+.card__label {
+  @include eyebrow;
+  margin-bottom: 2px;
+}
+
+.card__balance {
+  font-size: var(--fin-text-xl);
+}
+
+.card__available {
+  font-size: var(--fin-text-base);
+  color: var(--fin-text-secondary);
+}
+
+.card__footer {
+  margin-top: auto;
+  padding-top: var(--fin-space-4);
+}
+
+.card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fin-space-2);
+  font-size: var(--fin-text-sm);
+  font-weight: 600;
+  color: var(--fin-primary);
+}

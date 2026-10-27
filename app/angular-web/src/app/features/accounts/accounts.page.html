@@ -1,0 +1,60 @@
+<fin-page-header
+  [title]="'accounts.title' | translate"
+  [subtitle]="'accounts.subtitle' | translate"
+/>
+
+<section class="section" aria-labelledby="accounts-heading">
+  <h2 id="accounts-heading" class="section__title" data-qa="accounts-heading">
+    {{ 'accounts.yourAccounts' | translate }}
+  </h2>
+
+  @if (store.isLoading()) {
+    <div class="grid">
+      @for (row of skeletonRows; track row) {
+        <div class="skeleton-card"><fin-skeleton height="140px" /></div>
+      }
+    </div>
+  } @else if (store.accounts().length === 0) {
+    <fin-empty-state
+      icon="wallet"
+      [title]="'accounts.noAccountsTitle' | translate"
+      [message]="'accounts.noAccountsMessage' | translate"
+    />
+  } @else {
+    <div class="grid">
+      @for (account of store.accounts(); track account.id) {
+        <fin-account-card [account]="account" [hidden]="store.balancesHidden()" />
+      }
+    </div>
+  }
+</section>
+
+<section class="section" aria-labelledby="cards-heading">
+  <h2 id="cards-heading" class="section__title">{{ 'accounts.virtualCards' | translate }}</h2>
+  <p class="section__note">{{ 'accounts.cardsNote' | translate }}</p>
+
+  @if (store.isLoading()) {
+    <div class="grid grid--cards">
+      @for (row of skeletonRows; track row) {
+        <div class="skeleton-card"><fin-skeleton height="240px" /></div>
+      }
+    </div>
+  } @else if (store.cards().length === 0) {
+    <fin-empty-state
+      icon="card"
+      [title]="'accounts.noCardsTitle' | translate"
+      [message]="'accounts.noCardsMessage' | translate"
+    />
+  } @else {
+    <div class="grid grid--cards">
+      @for (card of store.cards(); track card.id) {
+        <fin-card-tile
+          [card]="card"
+          [accountName]="accountName(card)"
+          [busy]="pendingCardId() === card.id"
+          (toggleRequested)="confirmToggle($event)"
+        />
+      }
+    </div>
+  }
+</section>

@@ -1,0 +1,59 @@
+<span class="fin-label" [id]="labelId">{{ label() }}</span>
+
+<div class="fin-select" [class.fin-select--open]="isOpen()">
+  <button
+    type="button"
+    class="fin-select__control"
+    [class.is-invalid]="invalid()"
+    [id]="controlId()"
+    role="combobox"
+    [attr.aria-controls]="listId"
+    [attr.aria-expanded]="isOpen()"
+    aria-haspopup="listbox"
+    [attr.aria-labelledby]="labelledBy()"
+    [attr.aria-activedescendant]="isOpen() ? optionId(activeIndex()) : null"
+    [attr.aria-describedby]="describedBy() ?? null"
+    [attr.aria-invalid]="invalid()"
+    [disabled]="disabled()"
+    [attr.data-qa]="qa() || null"
+    [attr.data-value]="value()"
+    (click)="toggle()"
+    (keydown)="onKeyDown($event)"
+    (blur)="onBlur()"
+  >
+    <span class="fin-select__value" [class.fin-select__value--placeholder]="selected() === null">
+      {{ triggerLabel() }}
+    </span>
+    <span class="fin-select__chevron" aria-hidden="true">
+      <fin-icon name="chevron-down" [size]="18" />
+    </span>
+  </button>
+
+  @if (isOpen()) {
+    <div class="fin-select__list" [id]="listId" role="listbox" [attr.aria-labelledby]="labelId">
+      @for (option of options(); track option.value; let index = $index) {
+        <button
+          type="button"
+          tabindex="-1"
+          role="option"
+          class="fin-select__option"
+          [class.fin-select__option--active]="index === activeIndex()"
+          [class.fin-select__option--selected]="option.value === value()"
+          [id]="optionId(index)"
+          [attr.aria-selected]="option.value === value()"
+          [attr.data-qa]="optionQa()"
+          [attr.data-value]="option.value"
+          (pointermove)="setActive(index)"
+          (click)="commit(index)"
+        >
+          <span class="fin-select__option-label">{{ option.label }}</span>
+          @if (option.value === value()) {
+            <span class="fin-select__check" aria-hidden="true">
+              <fin-icon name="check" [size]="16" />
+            </span>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

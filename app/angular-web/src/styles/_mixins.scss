@@ -1,0 +1,56 @@
+@use 'tokens' as *;
+
+/// Reusable composition helpers. Kept deliberately small: these are patterns
+/// repeated across features, not a generic utility framework.
+
+@mixin surface-card($radius: var(--fin-radius-xl)) {
+  background: var(--fin-surface);
+  border: 1px solid var(--fin-border);
+  border-radius: $radius;
+  box-shadow: var(--fin-shadow-xs);
+}
+
+@mixin tabular-numerals {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid var(--fin-primary);
+  outline-offset: $offset;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin section-title {
+  margin: 0;
+  font-size: var(--fin-text-lg);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--fin-text);
+}
+
+@mixin eyebrow {
+  margin: 0;
+  font-size: var(--fin-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fin-text-secondary);
+}
+
+@mixin scroll-shadow {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}

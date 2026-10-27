@@ -1,0 +1,131 @@
+﻿@use 'sass:map';
+
+/// Financial App design tokens.
+/// Every colour, spacing, radius, shadow and motion value used in the product
+/// is declared here once and exposed as a CSS custom property, so components
+/// never hard-code raw values.
+
+$breakpoints: (
+  'sm': 480px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  'xxl': 1600px,
+);
+
+@mixin from($name) {
+  @media (min-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin until($name) {
+  @media (max-width: (map.get($breakpoints, $name) - 1px)) {
+    @content;
+  }
+}
+
+:root {
+  /* Brand + surfaces */
+  --fin-bg: #f5f7fb;
+  --fin-surface: #ffffff;
+  --fin-surface-muted: #fafbfd;
+  --fin-navy: #101828;
+  --fin-primary: #315ef5;
+  --fin-primary-strong: #2449c9;
+  --fin-primary-soft: #e8edfe;
+  --fin-teal: #18b7a0;
+  --fin-teal-soft: #e3f7f4;
+
+  /* Text */
+  --fin-text: #172033;
+  --fin-text-secondary: #667085;
+  --fin-text-inverse: #ffffff;
+
+  /* Semantic */
+  --fin-success: #16856b;
+  /* AA-safe text tone for success chips on the soft tint. */
+  --fin-success-strong: #11684f;
+  --fin-success-soft: #e4f4ef;
+  --fin-warning: #b7791f;
+  /* AA-safe text tone for warning chips on the soft tint. */
+  --fin-warning-strong: #8a5a10;
+  --fin-warning-soft: #fdf3e2;
+  --fin-error: #d92d20;
+  /* AA-safe text tone for error chips on the soft tint. */
+  --fin-error-strong: #b42318;
+  --fin-error-soft: #fdeceb;
+
+  /* Lines */
+  --fin-border: #e4e7ec;
+  --fin-border-strong: #d0d5dd;
+  --fin-focus-ring: rgba(49, 94, 245, 0.35);
+
+  /* Category accents used by charts and chips */
+  --fin-cat-groceries: #315ef5;
+  --fin-cat-dining: #18b7a0;
+  --fin-cat-transport: #7a5af8;
+  --fin-cat-housing: #0e7090;
+  --fin-cat-utilities: #b7791f;
+  --fin-cat-shopping: #e4578a;
+  --fin-cat-health: #16856b;
+  --fin-cat-entertainment: #f2994a;
+  --fin-cat-income: #16856b;
+  --fin-cat-transfer: #667085;
+
+  /* Spacing scale (4px base) */
+  --fin-space-1: 4px;
+  --fin-space-2: 8px;
+  --fin-space-3: 12px;
+  --fin-space-4: 16px;
+  --fin-space-5: 20px;
+  --fin-space-6: 24px;
+  --fin-space-8: 32px;
+  --fin-space-10: 40px;
+  --fin-space-12: 48px;
+
+  /* Radii */
+  --fin-radius-sm: 10px;
+  --fin-radius-md: 14px;
+  --fin-radius-lg: 18px;
+  --fin-radius-xl: 20px;
+  --fin-radius-pill: 999px;
+
+  /* Restrained elevation */
+  --fin-shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --fin-shadow-sm: 0 2px 8px rgba(16, 24, 40, 0.06);
+  --fin-shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
+  --fin-shadow-lg: 0 20px 48px rgba(16, 24, 40, 0.12);
+
+  /* Typography */
+  --fin-font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --fin-text-xs: 0.75rem;
+  --fin-text-sm: 0.8125rem;
+  --fin-text-base: 0.9375rem;
+  --fin-text-lg: 1.0625rem;
+  --fin-text-xl: 1.375rem;
+  --fin-text-2xl: 1.75rem;
+  --fin-text-3xl: 2.25rem;
+
+  /* Layout */
+  --fin-sidebar-width: 256px;
+  --fin-topbar-height: 68px;
+  --fin-content-max: 1360px;
+
+  /* Motion */
+  --fin-duration-fast: 120ms;
+  --fin-duration-base: 200ms;
+  --fin-duration-slow: 320ms;
+  --fin-duration-shimmer: 1400ms;
+  --fin-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fin-duration-fast: 1ms;
+    --fin-duration-base: 1ms;
+    --fin-duration-slow: 1ms;
+  }
+}

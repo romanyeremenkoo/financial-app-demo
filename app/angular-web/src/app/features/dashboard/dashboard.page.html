@@ -1,0 +1,182 @@
+<fin-page-header
+  [title]="'dashboard.title' | translate"
+  [subtitle]="'dashboard.subtitle' | translate: { month: monthLabel() }"
+>
+  <a class="fin-button fin-button--secondary" routerLink="/transactions">
+    <fin-icon name="list" [size]="18" />
+    {{ 'dashboard.transactionHistory' | translate }}
+  </a>
+  <a class="fin-button fin-button--primary" routerLink="/transfers">
+    <fin-icon name="transfer" [size]="18" />
+    {{ 'dashboard.moveMoney' | translate }}
+  </a>
+</fin-page-header>
+
+<section class="kpis" [attr.aria-label]="'dashboard.keyFigures' | translate">
+  <article class="kpi kpi--hero">
+    <p class="kpi__label">{{ 'dashboard.totalBalance' | translate }}</p>
+    @if (store.isLoading()) {
+      <fin-skeleton width="180px" height="34px" />
+    } @else {
+      <fin-money
+        class="kpi__value"
+        [value]="store.totalBalance()"
+        [hidden]="store.balancesHidden()"
+      />
+      <p class="kpi__meta">
+        {{ 'dashboard.availableNow' | translate }}
+        <fin-money [value]="store.totalAvailable()" [hidden]="store.balancesHidden()" />
+      </p>
+    }
+  </article>
+
+  <article class="kpi">
+    <p class="kpi__label">
+      <span class="kpi__dot kpi__dot--in" aria-hidden="true"></span>
+      {{ 'dashboard.incomeThisMonth' | translate }}
+    </p>
+    @if (store.isLoading()) {
+      <fin-skeleton width="130px" height="26px" />
+    } @else {
+      <fin-money
+        class="kpi__value"
+        [value]="store.currentMonthTotals().income"
+        [hidden]="store.balancesHidden()"
+      />
+    }
+  </article>
+
+  <article class="kpi">
+    <p class="kpi__label">
+      <span class="kpi__dot kpi__dot--out" aria-hidden="true"></span>
+      {{ 'dashboard.spentThisMonth' | translate }}
+    </p>
+    @if (store.isLoading()) {
+      <fin-skeleton width="130px" height="26px" />
+    } @else {
+      <fin-money
+        class="kpi__value"
+        [value]="store.currentMonthTotals().expenses"
+        [hidden]="store.balancesHidden()"
+      />
+      <p class="kpi__meta">
+        {{ 'dashboard.net' | translate }}
+        <fin-money
+          [value]="store.currentMonthTotals().net"
+          signDisplay="always"
+          tone="signed"
+          [hidden]="store.balancesHidden()"
+        />
+      </p>
+    }
+  </article>
+</section>
+
+<section class="panel" aria-labelledby="accounts-heading">
+  <div class="panel__head">
+    <h2 id="accounts-heading" class="panel__title">{{ 'dashboard.accounts' | translate }}</h2>
+    <a class="panel__link" routerLink="/accounts">
+      {{ 'dashboard.manageAccounts' | translate }}
+      <fin-icon name="arrow-right" [size]="16" />
+    </a>
+  </div>
+
+  @if (store.isLoading()) {
+    <div class="account-grid">
+      @for (row of skeletonRows; track row) {
+        <div class="skeleton-card"><fin-skeleton height="120px" /></div>
+      }
+    </div>
+  } @else {
+    <div class="account-grid">
+      @for (account of store.accounts(); track account.id) {
+        <fin-account-card [account]="account" [hidden]="store.balancesHidden()" />
+      }
+    </div>
+  }
+</section>
+
+<div class="split">
+  <section class="panel" aria-labelledby="spending-heading">
+    <div class="panel__head">
+      <h2 id="spending-heading" class="panel__title">
+        {{ 'dashboard.spendingByCategory' | translate }}
+      </h2>
+      <a class="panel__link" routerLink="/analytics">
+        {{ 'dashboard.fullAnalytics' | translate }}
+        <fin-icon name="arrow-right" [size]="16" />
+      </a>
+    </div>
+
+    @if (store.isLoading()) {
+      <fin-skeleton height="240px" />
+    } @else if (topCategories().length === 0) {
+      <fin-empty-state
+        icon="chart"
+        [title]="'dashboard.noSpendingTitle' | translate"
+        [message]="'dashboard.noSpendingMessage' | translate"
+      />
+    } @else {
+      <div class="spending">
+        <fin-spending-donut
+          [breakdown]="store.currentMonthSpending()"
+          [currency]="store.currency"
+          [hidden]="store.balancesHidden()"
+        />
+        <ul class="legend">
+          @for (item of topCategories(); track item.category) {
+            <li class="legend__item">
+              <span class="legend__swatch" [style.background]="categoryColor(item.category)"></span>
+              <span class="legend__label">{{ categoryKey(item.category) | translate }}</span>
+              <span class="legend__share">{{ item.share }}%</span>
+              <fin-money
+                class="legend__value"
+                [value]="item.total"
+                [hidden]="store.balancesHidden()"
+              />
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  <section class="panel" aria-labelledby="recent-heading">
+    <div class="panel__head">
+      <h2 id="recent-heading" class="panel__title">
+        {{ 'dashboard.recentTransactions' | translate }}
+      </h2>
+      <a class="panel__link" routerLink="/transactions">
+        {{ 'dashboard.seeAll' | translate }}
+        <fin-icon name="arrow-right" [size]="16" />
+      </a>
+    </div>
+
+    @if (store.isLoading()) {
+      <div class="recent-skeleton">
+        @for (row of skeletonRows; track row) {
+          <fin-skeleton height="52px" />
+        }
+      </div>
+    } @else if (store.recentTransactions().length === 0) {
+      <fin-empty-state
+        icon="list"
+        [title]="'dashboard.noTransactionsTitle' | translate"
+        [message]="'dashboard.noTransactionsMessage' | translate"
+      />
+    } @else {
+      <ul class="recent">
+        @for (transaction of store.recentTransactions(); track transaction.id) {
+          <li>
+            <fin-transaction-row
+              [transaction]="transaction"
+              [accountName]="accountName(transaction)"
+              [hideAmount]="store.balancesHidden()"
+              (selected)="openDetails($event)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>

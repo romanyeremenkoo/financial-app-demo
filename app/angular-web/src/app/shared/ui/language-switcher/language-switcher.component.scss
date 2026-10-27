@@ -1,0 +1,41 @@
+:host {
+  display: inline-flex;
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--fin-border);
+  border-radius: var(--fin-radius-pill);
+  background: var(--fin-surface);
+}
+
+.switch__option {
+  min-width: 36px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--fin-radius-pill);
+  background: transparent;
+  color: var(--fin-text-secondary);
+  font: inherit;
+  font-size: var(--fin-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background var(--fin-duration-fast) var(--fin-ease),
+    color var(--fin-duration-fast) var(--fin-ease);
+}
+
+.switch__option:hover {
+  color: var(--fin-text);
+}
+
+.switch__option--active {
+  background: var(--fin-primary-soft);
+  // The strong blue keeps the 12px label above the 4.5:1 AA threshold on the
+  // soft tint; the base primary only reaches 4.43:1.
+  color: var(--fin-primary-strong);
+}

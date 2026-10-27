@@ -1,0 +1,108 @@
+<fin-page-header
+  [title]="'analytics.title' | translate"
+  [subtitle]="'analytics.subtitle' | translate"
+/>
+
+<div
+  class="period"
+  role="group"
+  data-qa="period-selector"
+  [attr.aria-label]="'analytics.selectMonth' | translate"
+>
+  @for (option of periodOptions(); track option.offset) {
+    <button
+      type="button"
+      class="period__button"
+      [class.period__button--active]="monthsAgo() === option.offset"
+      [attr.aria-pressed]="monthsAgo() === option.offset"
+      (click)="selectPeriod(option.offset)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>
+
+@if (store.isLoading()) {
+  <div class="panel"><fin-skeleton height="280px" /></div>
+} @else {
+  <section class="totals" [attr.aria-label]="'analytics.periodTotals' | translate">
+    <article class="total">
+      <p class="total__label">{{ 'analytics.income' | translate: { period: periodLabel() } }}</p>
+      <fin-money class="total__value" [value]="totals().income" [hidden]="store.balancesHidden()" />
+    </article>
+    <article class="total">
+      <p class="total__label">{{ 'analytics.spending' | translate: { period: periodLabel() } }}</p>
+      <fin-money
+        class="total__value"
+        [value]="totals().expenses"
+        [hidden]="store.balancesHidden()"
+      />
+    </article>
+    <article class="total">
+      <p class="total__label">{{ 'analytics.netResult' | translate }}</p>
+      <fin-money
+        class="total__value"
+        [value]="totals().net"
+        signDisplay="always"
+        tone="signed"
+        [hidden]="store.balancesHidden()"
+      />
+    </article>
+  </section>
+
+  <div class="split">
+    <section class="panel" aria-labelledby="trend-heading">
+      <h2 id="trend-heading" class="panel__title">{{ 'analytics.trendTitle' | translate }}</h2>
+      <p class="panel__note">{{ 'analytics.trendNote' | translate }}</p>
+      <fin-monthly-bars [series]="store.monthlySeries()" [currency]="store.currency" />
+    </section>
+
+    <section class="panel" aria-labelledby="breakdown-heading">
+      <h2 id="breakdown-heading" class="panel__title">
+        {{ 'analytics.breakdownTitle' | translate }}
+      </h2>
+
+      @if (breakdown().length === 0) {
+        <fin-empty-state
+          icon="chart"
+          [title]="'analytics.emptyTitle' | translate: { period: periodLabel() }"
+          [message]="'analytics.emptyMessage' | translate"
+        />
+      } @else {
+        <fin-spending-donut
+          [breakdown]="breakdown()"
+          [currency]="store.currency"
+          [hidden]="store.balancesHidden()"
+        />
+
+        <ul class="breakdown">
+          @for (item of breakdown(); track item.category) {
+            <li class="breakdown__item">
+              <span class="breakdown__head">
+                <span
+                  class="breakdown__swatch"
+                  [style.background]="categoryColor(item.category)"
+                  aria-hidden="true"
+                ></span>
+                {{ categoryKey(item.category) | translate }}
+              </span>
+              <span class="breakdown__bar" aria-hidden="true">
+                <span
+                  class="breakdown__fill"
+                  [style.width.%]="item.share"
+                  [style.background]="categoryColor(item.category)"
+                ></span>
+              </span>
+              <span class="breakdown__share">{{ item.share }}%</span>
+              <fin-money
+                class="breakdown__value"
+                [value]="item.total"
+                [hidden]="store.balancesHidden()"
+              />
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+}
