@@ -210,7 +210,10 @@
     padding: var(--fin-space-3) var(--fin-space-8);
   }
 
-  .topbar__menu {
+  // Scoped to `.topbar` on purpose: `.icon-button` is declared later in this
+  // stylesheet, so a single class would lose the cascade and leave the mobile
+  // nav toggle visible on desktop.
+  .topbar .topbar__menu {
     display: none;
   }
 }
